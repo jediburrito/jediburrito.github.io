@@ -19,7 +19,7 @@ function selectFirst(sym) {
 		slots[i].addEventListener('click', turnClick, false);
 	
 	if(huPlayer === 'O') 
-		turn(miniMax(origBoard, aiPlayer, 25).index, aiPlayer);
+		turn(miniMax(origBoard, aiPlayer, 12).index, aiPlayer);
 	
 	document.querySelector('.selectFirst').style.display = "none";
 }
@@ -62,7 +62,7 @@ function turn(slotId, player) {
 	}
 
 	if(player === huPlayer){
-		let nextMove = miniMax(origBoard, aiPlayer, 25);
+		let nextMove = miniMax(origBoard, aiPlayer, 12);
 		console.log(nextMove.index);
 		turn(nextMove.index, aiPlayer);
 	}
