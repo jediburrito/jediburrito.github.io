@@ -19,7 +19,7 @@ function selectFirst(sym) {
 		slots[i].addEventListener('click', turnClick, false);
 	
 	if(huPlayer === 'O') 
-		turn(miniMax(origBoard, aiPlayer, 2).index, aiPlayer);
+		turn(miniMax(origBoard, aiPlayer, 25).index, aiPlayer);
 	
 	document.querySelector('.selectFirst').style.display = "none";
 }
@@ -53,53 +53,49 @@ function turn(slotId, player) {
 		document.getElementById(slotId).innerHTML = player;
 	}
 	origBoard[Math.floor(slotId/7)][Math.floor(slotId%7)] = player;
+	console.log("Player: " + player + " move: " + slotId);
 
-	if(checkScore(origBoard, player, slotId) === 1000 || checkIfFull(origBoard)){
+	if(checkScore(origBoard, player, slotId) === 1000 || checkIfFull(origBoard)) {
+		console.log("trigger");
 		gameOver(player);
 		return;
 	}
 
 	if(player === huPlayer){
-		let nextMove = miniMax(origBoard, aiPlayer, 2);
+		let nextMove = miniMax(origBoard, aiPlayer, 25);
 		console.log(nextMove.index);
 		turn(nextMove.index, aiPlayer);
-	}/*
-	else if(player === aiPlayer) {
-		if(checkIfFull(origBoard)) {
-			gameOver(player);
-			return;
-		}
-		let nextMove = miniMax(origBoard, huPlayer);
-		console.log(nextMove.index);
-		
-		turn(nextMove.index, huPlayer);
 	}
-	*/
 }
-
 
 function checkScore(board, player, slotId) {
 	slotId = nextSpot(board, slotId);
 	let streak = 0;
 	let score = 0;
+	let connect = 0;
 	let row = Math.floor(slotId/7);
 	let column = Math.floor(slotId%7);
 	let x = -1;
 	let y = -1;
 
 	for(let i = 0; i < 4; i++) {
-		streak = 0;
+		streak = connect = 0;
+
 		for(let j = 1; j < 4; j++) {
-			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0) 	
+			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0) {
 				if(board[row + (x * j)][column + (y * j)] === player) 
 					streak++;
+				connect++;
+				}
 				else break;
 		}
 		
 		for(let j = 1; j < 4; j++) {
-			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0) 
+			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0) {
 				if(board[row - (x * j)][column - (y * j)] === player)
 					streak++;
+				connect++;
+			}
 				else break;
 		}
 
@@ -108,10 +104,15 @@ function checkScore(board, player, slotId) {
 		x = 0;
 		y = -1;
 		}	
-		if(streak === 3)
+
+		if(streak === 3){
 			return 1000;
-		
+		}
+		if(connect >= 3) {
 		score += 2*(streak*streak);
+		score++;
+	}
+
 	}	
 		return score;
 }
@@ -162,12 +163,11 @@ function miniMax(board, player, depth) {
 
 		if(score.value === 1000) {
 			player === huPlayer ? score.value *= -1 : score.value;
-			console.log("connect four at index: " + score.index);
 			return score;
 		}
 
 		if(i === 3)
-			score.value += 3;
+			score.value += 6;
 		//checkScore for other player and award half points
 		score.value += Math.floor((checkScore(newBoard, otherPlayer, i)/2));
 
@@ -198,26 +198,29 @@ function miniMax(board, player, depth) {
 		newBoard[Math.floor(index/7)][Math.floor(index%7)] = player;
 		
 		if(checkIfFull(newBoard)) {
-			console.log("endboard");
 			return scoreSort[0];
 		}
 		if(player === huPlayer)
 			scoreSort[0] *= -1;
+
 		scoreSort[0].value += miniMax(newBoard, otherPlayer, depth).value;
 
-		if(player === aiPlayer)
-				scoreSort[0].value > bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
-		
-		if(player === huPlayer)
-					scoreSort[0].value < bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
+		if(player === aiPlayer){
+			if(scoreSort[0].value >= 1000)
+				return scoreSort[0];
 
-			console.log("player: " + player + " index: " + bestScore.index + " score: " + bestScore.value );
+				scoreSort[0].value > bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
+		}
+		if(player === huPlayer){
+			if(scoreSort[0].value <= 1000)
+				return scoreSort[0];
+
+					scoreSort[0].value < bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
+				}
 		newBoard[Math.floor(index/7)][Math.floor(index%7)] = ''; 
 
 	}
 
 	//flip score for minMax
-	console.log("player: " + player);
-	console.log("score: " + bestScore.value + "index: " + bestScore.index);
 	return bestScore;
 }
