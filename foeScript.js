@@ -19,7 +19,7 @@ function selectFirst(sym) {
 		slots[i].addEventListener('click', turnClick, false);
 	
 	if(huPlayer === 'O') 
-		turn(miniMax(origBoard, aiPlayer, 12).index, aiPlayer);
+		turn(miniMax(origBoard, aiPlayer, 0).index, aiPlayer);
 	
 	document.querySelector('.selectFirst').style.display = "none";
 }
@@ -53,19 +53,21 @@ function turn(slotId, player) {
 		document.getElementById(slotId).innerHTML = player;
 	}
 	origBoard[Math.floor(slotId/7)][Math.floor(slotId%7)] = player;
-	console.log("Player: " + player + " move: " + slotId);
-
-	if(checkScore(origBoard, player, slotId) === 1000 || checkIfFull(origBoard)) {
+	//console.log("Player: " + player + " move: " + slotId);
+	//|| checkIfFull(origBoard)) {
+	if(checkScore(origBoard, player, slotId) === 1000 ){ 
 		console.log("trigger");
 		gameOver(player);
 		return;
 	}
+	//huPlayer = player === 'X' ? 'O' : 'X';
 
 	if(player === huPlayer){
-		let nextMove = miniMax(origBoard, aiPlayer, 12);
+		let nextMove = miniMax(origBoard, aiPlayer, 6);
 		console.log(nextMove.index);
 		turn(nextMove.index, aiPlayer);
 	}
+	
 }
 
 function checkScore(board, player, slotId) {
@@ -79,23 +81,25 @@ function checkScore(board, player, slotId) {
 	let y = -1;
 
 	for(let i = 0; i < 4; i++) {
-		streak = connect = 0;
+		streak = 0;
+		connect = 0;
 
 		for(let j = 1; j < 4; j++) {
-			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0) {
+			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0) 
 				if(board[row + (x * j)][column + (y * j)] === player) 
 					streak++;
+				else if(board[row + (x * j)][column + (y * j)] === '')
 				connect++;
-				}
 				else break;
 		}
 		
 		for(let j = 1; j < 4; j++) {
-			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0) {
+			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0)
+				
 				if(board[row - (x * j)][column - (y * j)] === player)
 					streak++;
-				connect++;
-			}
+				else if(board[row - (x*j)][column - (y * j)] === '')
+					connect++;
 				else break;
 		}
 
@@ -105,7 +109,8 @@ function checkScore(board, player, slotId) {
 		y = -1;
 		}	
 
-		if(streak === 3){
+		if(streak >= 3){
+			console.log(streak);
 			return 1000;
 		}
 		if(connect >= 3) {
@@ -167,9 +172,10 @@ function miniMax(board, player, depth) {
 		}
 
 		if(i === 3)
-			score.value += 6;
+			score.value += 3;
 		//checkScore for other player and award half points
-		score.value += Math.floor((checkScore(newBoard, otherPlayer, i)/2));
+
+		score.value += (checkScore(newBoard, otherPlayer, i)/2);
 
 		let index = scoreSort.length;
 		if(index === 0)
@@ -181,7 +187,9 @@ function miniMax(board, player, depth) {
 		}
 	}
 		if(depth === 0) {
+			//console.log("index: "+ scoreSort[0].index + " value: " + scoreSort[0].value);
 			player === huPlayer ? scoreSort[0].value *= -1: scoreSort[0].value;
+
 			return scoreSort[0];
 		}
 
@@ -192,7 +200,6 @@ function miniMax(board, player, depth) {
 
 	//replace checkScore with miniMax score at index. Max score for aiPlayer, Min for huPlayer
 		depth--;
-
 	for(let i = 0; i < scoreSort.length; i++) {
 		let index = nextSpot(newBoard, scoreSort[0].index);
 		newBoard[Math.floor(index/7)][Math.floor(index%7)] = player;
@@ -201,26 +208,30 @@ function miniMax(board, player, depth) {
 			return scoreSort[0];
 		}
 		if(player === huPlayer)
-			scoreSort[0] *= -1;
-
+			scoreSort[0].value *= -1;
+		
 		scoreSort[0].value += miniMax(newBoard, otherPlayer, depth).value;
+		 			
 
 		if(player === aiPlayer){
 			if(scoreSort[0].value >= 1000)
 				return scoreSort[0];
-
+			else
 				scoreSort[0].value > bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
 		}
-		if(player === huPlayer){
-			if(scoreSort[0].value <= 1000)
-				return scoreSort[0];
 
+		if(player === huPlayer){
+
+			if(scoreSort[0].value <= -1000)
+				return scoreSort[0];
+			else
 					scoreSort[0].value < bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
 				}
+				
 		newBoard[Math.floor(index/7)][Math.floor(index%7)] = ''; 
 
 	}
-
+	console.log("index: "+ bestScore.index + " value: " + bestScore.value);
 	//flip score for minMax
 	return bestScore;
 }
