@@ -61,7 +61,7 @@ function turn(slotId, player) {
 		return;
 	}
 	//huPlayer = player === 'X' ? 'O' : 'X';
-
+	
 	if(player === huPlayer){
 		let nextMove = miniMax(origBoard, aiPlayer, 6);
 		console.log(nextMove.index);
@@ -72,9 +72,10 @@ function turn(slotId, player) {
 
 function checkScore(board, player, slotId) {
 	slotId = nextSpot(board, slotId);
+	let winStreak = 0;
 	let streak = 0;
 	let score = 0;
-	let connect = 0;
+	let swap = 0;
 	let row = Math.floor(slotId/7);
 	let column = Math.floor(slotId%7);
 	let x = -1;
@@ -82,24 +83,38 @@ function checkScore(board, player, slotId) {
 
 	for(let i = 0; i < 4; i++) {
 		streak = 0;
-		connect = 0;
-
+		winStreak = 0;
+		swap = 0;
 		for(let j = 1; j < 4; j++) {
-			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0) 
-				if(board[row + (x * j)][column + (y * j)] === player) 
+			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0) {
+				if(board[row + (x * j)][column + (y * j)] === player ) {
+					if(swap === 0)
+					winStreak++;
 					streak++;
-				else if(board[row + (x * j)][column + (y * j)] === '')
-				connect++;
+				}
+				else if(board[row + (x * j)][column + (y * j)] === '') {
+				streak++
+				swap = 1;
+				}
+			 else break;
+			}
 				else break;
 		}
+		swap = 0;
 		
 		for(let j = 1; j < 4; j++) {
-			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0)
-				
-				if(board[row - (x * j)][column - (y * j)] === player)
+			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0) {
+				if(board[row - (x * j)][column - (y * j)] === player ) {
+					if(swap === 0)
+					winStreak++;
 					streak++;
-				else if(board[row - (x*j)][column - (y * j)] === '')
-					connect++;
+				}
+				else if(board[row - (x * j)][column - (y * j)] === '') {
+				streak++
+				swap = 1;
+				}
+			 else break;
+			}
 				else break;
 		}
 
@@ -109,12 +124,12 @@ function checkScore(board, player, slotId) {
 		y = -1;
 		}	
 
-		if(streak >= 3){
-			console.log(streak);
+		if(winStreak >= 3){
+			console.log("streak: " + winStreak + " streak" + streak);
 			return 1000;
 		}
-		if(connect >= 3) {
-		score += 2*(streak*streak);
+		if(streak >= 3) {
+		score += 2 * winStreak + streak;
 		score++;
 	}
 
