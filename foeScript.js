@@ -64,7 +64,6 @@ function turn(slotId, player) {
 	
 	if(player === huPlayer){
 		let nextMove = miniMax(origBoard, aiPlayer, 6);
-		console.log(nextMove.index);
 		turn(nextMove.index, aiPlayer);
 	}
 	
@@ -124,10 +123,9 @@ function checkScore(board, player, slotId) {
 		y = -1;
 		}	
 
-		if(winStreak >= 3){
-			console.log("streak: " + winStreak + " streak" + streak);
+		if(winStreak >= 3)
 			return 1000;
-		}
+
 		if(streak >= 3) {
 		score += 2 * winStreak + streak;
 		score++;
@@ -246,7 +244,7 @@ function miniMax(board, player, depth) {
 		newBoard[Math.floor(index/7)][Math.floor(index%7)] = ''; 
 
 	}
-	console.log("index: "+ bestScore.index + " value: " + bestScore.value);
+	
 	//flip score for minMax
 	return bestScore;
 }
