@@ -1,7 +1,7 @@
 var origBoard = new Array(6);
 let huPlayer = "red";
 let aiPlayer = "black";
-var depth = 9;
+var depth = 16;
 for(let i = 6; i < 6; i++)
 	origBoard[i] = new Array(7);
 
@@ -211,7 +211,7 @@ function miniMax(board, player, depth) {
 					scoreSort[0].value < bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
 
 			console.log("player: " + player + " index: " + bestScore.index + " score: " + bestScore.value );
-		newBoard[Math.floor(index/7)][Math.floor(index%7)] = ''; 
+		newBoard[Math.floor(index/7)][Math.floor(index%7)] = "white"; 
 
 	}
 
