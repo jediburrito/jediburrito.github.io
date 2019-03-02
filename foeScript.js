@@ -1,6 +1,6 @@
 var origBoard = new Array(6);
-let huPlayer = 'X';
-let aiPlayer = 'O';
+let huPlayer = "red";
+let aiPlayer = "black";
 var depth = 9;
 for(let i = 6; i < 6; i++)
 	origBoard[i] = new Array(7);
@@ -10,15 +10,15 @@ startGame();
 
 function selectFirst(sym) {
 	huPlayer = sym;
-	aiPlayer = sym === 'O' ? 'X': 'O';
+	aiPlayer = sym === "black" ? "red": "black";
 	origBoard = new Array(6); 
 		for(let i = 0;  i < 6; i++) 
-			origBoard[i] = new Array(7).fill('');
+			origBoard[i] = new Array(7).fill("white");
 	
 	for(let i = 0; i < slots.length; i++)
 		slots[i].addEventListener('click', turnClick, false);
 	
-	if(huPlayer === 'O') 
+	if(huPlayer === "black") 
 		turn(miniMax(origBoard, aiPlayer, 2).index, aiPlayer);
 	
 	document.querySelector('.selectFirst').style.display = "none";
@@ -29,28 +29,27 @@ function startGame() {
 	document.querySelector('.endgame .text').innerText = "";
 	document.querySelector('.selectFirst').style.display = "block";
 	for(let i = 0; i < slots.length; i++) {
-		slots[i].innerText = '';
-		slots[i].style.removeProperty('background-color');
+		slots[i].style.backgroundColor = "white";
 	}
 }
 
 function turnClick(square) {
-	if(document.getElementById(square.target.id).innerHTML === '') 
+	if(document.getElementById(square.target.id).style.backgroundColor === "white") 
 		turn(parseInt(square.target.id) %7, huPlayer);
 }
 
 function turn(slotId, player) {
-	if(document.getElementById(slotId).innerHTML !== '')
+	if(document.getElementById(slotId).style.backgroundColor !== "white")
 		return;
 	while(slotId < 35) {
 		slotId += 7;
-		if(document.getElementById(slotId).innerHTML !== '') {
+		if(document.getElementById(slotId).style.backgroundColor !== "white") {
 			slotId -= 7;
-			document.getElementById(slotId). innerHTML = player;
+			document.getElementById(slotId).style.backgroundColor = player;
 			break;
 		}
-		document.getElementById(slotId -  7).innerHTML = '';
-		document.getElementById(slotId).innerHTML = player;
+		document.getElementById(slotId - 7).style.backgroundColor = "white";
+		document.getElementById(slotId).style.backgroundColor = player;
 	}
 	origBoard[Math.floor(slotId/7)][Math.floor(slotId%7)] = player;
 
@@ -131,13 +130,13 @@ function declareWinner(who) {
 
 function checkIfFull(board) {
 	for(let i = 0; i < 7; i++)
-		if(board[0][i] === '')
+		if(board[0][i] === "white")
 			return false;
 	return true;
 }
 
 function nextSpot(board, slotId) {
-	while(slotId < 35 && board[Math.floor((slotId + 7)/7)][Math.floor((slotId + 7)%7)] === '') 
+	while(slotId < 35 && board[Math.floor((slotId + 7)/7)][Math.floor((slotId + 7)%7)] === "white") 
 		slotId += 7;
 
 	return slotId;
@@ -156,7 +155,7 @@ function miniMax(board, player, depth) {
 		}
 		//check and sort each next slot value. if slot not available pass.
 	for(let i = 0; i < 7; i++) {
-		if(newBoard[0][i] === '') {
+		if(newBoard[0][i] === "white") {
 			let score = {value: checkScore(newBoard, player, i), index: i};
 		
 
