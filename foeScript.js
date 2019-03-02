@@ -19,7 +19,7 @@ function selectFirst(sym) {
 		slots[i].addEventListener('click', turnClick, false);
 	
 	if(huPlayer === 'O') 
-		turn(miniMax(origBoard, aiPlayer, 0).index, aiPlayer);
+		turn(miniMax(origBoard, aiPlayer, 2).index, aiPlayer);
 	
 	document.querySelector('.selectFirst').style.display = "none";
 }
@@ -53,28 +53,35 @@ function turn(slotId, player) {
 		document.getElementById(slotId).innerHTML = player;
 	}
 	origBoard[Math.floor(slotId/7)][Math.floor(slotId%7)] = player;
-	//console.log("Player: " + player + " move: " + slotId);
-	//|| checkIfFull(origBoard)) {
-	if(checkScore(origBoard, player, slotId) === 1000 ){ 
-		console.log("trigger");
+
+	if(checkScore(origBoard, player, slotId) === 1000 || checkIfFull(origBoard)){
 		gameOver(player);
 		return;
 	}
-	//huPlayer = player === 'X' ? 'O' : 'X';
-	
+
 	if(player === huPlayer){
-		let nextMove = miniMax(origBoard, aiPlayer, 6);
+		let nextMove = miniMax(origBoard, aiPlayer, 2);
+		console.log(nextMove.index);
 		turn(nextMove.index, aiPlayer);
+	}/*
+	else if(player === aiPlayer) {
+		if(checkIfFull(origBoard)) {
+			gameOver(player);
+			return;
+		}
+		let nextMove = miniMax(origBoard, huPlayer);
+		console.log(nextMove.index);
+		
+		turn(nextMove.index, huPlayer);
 	}
-	
+	*/
 }
+
 
 function checkScore(board, player, slotId) {
 	slotId = nextSpot(board, slotId);
-	let winStreak = 0;
 	let streak = 0;
 	let score = 0;
-	let swap = 0;
 	let row = Math.floor(slotId/7);
 	let column = Math.floor(slotId%7);
 	let x = -1;
@@ -82,38 +89,17 @@ function checkScore(board, player, slotId) {
 
 	for(let i = 0; i < 4; i++) {
 		streak = 0;
-		winStreak = 0;
-		swap = 0;
 		for(let j = 1; j < 4; j++) {
-			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0) {
-				if(board[row + (x * j)][column + (y * j)] === player ) {
-					if(swap === 0)
-					winStreak++;
+			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0) 	
+				if(board[row + (x * j)][column + (y * j)] === player) 
 					streak++;
-				}
-				else if(board[row + (x * j)][column + (y * j)] === '') {
-				streak++
-				swap = 1;
-				}
-			 else break;
-			}
 				else break;
 		}
-		swap = 0;
 		
 		for(let j = 1; j < 4; j++) {
-			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0) {
-				if(board[row - (x * j)][column - (y * j)] === player ) {
-					if(swap === 0)
-					winStreak++;
+			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0) 
+				if(board[row - (x * j)][column - (y * j)] === player)
 					streak++;
-				}
-				else if(board[row - (x * j)][column - (y * j)] === '') {
-				streak++
-				swap = 1;
-				}
-			 else break;
-			}
 				else break;
 		}
 
@@ -122,15 +108,10 @@ function checkScore(board, player, slotId) {
 		x = 0;
 		y = -1;
 		}	
-
-		if(winStreak >= 3)
+		if(streak === 3)
 			return 1000;
-
-		if(streak >= 3) {
-		score += 2 * winStreak + streak;
-		score++;
-	}
-
+		
+		score += 2*(streak*streak);
 	}	
 		return score;
 }
@@ -181,14 +162,14 @@ function miniMax(board, player, depth) {
 
 		if(score.value === 1000) {
 			player === huPlayer ? score.value *= -1 : score.value;
+			console.log("connect four at index: " + score.index);
 			return score;
 		}
 
 		if(i === 3)
 			score.value += 3;
 		//checkScore for other player and award half points
-
-		score.value += (checkScore(newBoard, otherPlayer, i)/2);
+		score.value += Math.floor((checkScore(newBoard, otherPlayer, i)/2));
 
 		let index = scoreSort.length;
 		if(index === 0)
@@ -200,9 +181,7 @@ function miniMax(board, player, depth) {
 		}
 	}
 		if(depth === 0) {
-			//console.log("index: "+ scoreSort[0].index + " value: " + scoreSort[0].value);
 			player === huPlayer ? scoreSort[0].value *= -1: scoreSort[0].value;
-
 			return scoreSort[0];
 		}
 
@@ -213,38 +192,32 @@ function miniMax(board, player, depth) {
 
 	//replace checkScore with miniMax score at index. Max score for aiPlayer, Min for huPlayer
 		depth--;
+
 	for(let i = 0; i < scoreSort.length; i++) {
 		let index = nextSpot(newBoard, scoreSort[0].index);
 		newBoard[Math.floor(index/7)][Math.floor(index%7)] = player;
 		
 		if(checkIfFull(newBoard)) {
+			console.log("endboard");
 			return scoreSort[0];
 		}
 		if(player === huPlayer)
-			scoreSort[0].value *= -1;
-		
+			scoreSort[0] *= -1;
 		scoreSort[0].value += miniMax(newBoard, otherPlayer, depth).value;
-		 			
 
-		if(player === aiPlayer){
-			if(scoreSort[0].value >= 1000)
-				return scoreSort[0];
-			else
+		if(player === aiPlayer)
 				scoreSort[0].value > bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
-		}
-
-		if(player === huPlayer){
-
-			if(scoreSort[0].value <= -1000)
-				return scoreSort[0];
-			else
+		
+		if(player === huPlayer)
 					scoreSort[0].value < bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
-				}
-				
+
+			console.log("player: " + player + " index: " + bestScore.index + " score: " + bestScore.value );
 		newBoard[Math.floor(index/7)][Math.floor(index%7)] = ''; 
 
 	}
-	
+
 	//flip score for minMax
+	console.log("player: " + player);
+	console.log("score: " + bestScore.value + "index: " + bestScore.index);
 	return bestScore;
 }
