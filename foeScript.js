@@ -1,7 +1,7 @@
 var origBoard = new Array(6);
 let huPlayer = "red";
 let aiPlayer = "black";
-var depth = 16;
+var depth = 42;
 for(let i = 6; i < 6; i++)
 	origBoard[i] = new Array(7);
 
@@ -53,7 +53,7 @@ function turn(slotId, player) {
 	}
 	origBoard[Math.floor(slotId/7)][Math.floor(slotId%7)] = player;
 
-	if(checkScore(origBoard, player, slotId) === 1000 || checkIfFull(origBoard)){
+	if(checkScore(origBoard, player, slotId) === 1000){
 		gameOver(player);
 		return;
 	}
