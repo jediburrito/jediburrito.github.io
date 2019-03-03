@@ -1,7 +1,7 @@
 var origBoard;
 let huPlayer = "red";
 let aiPlayer = "black";
-var startDepth = 12;
+var startDepth = 42;
 
 const slots = document.querySelectorAll('.slot');
 startGame();
@@ -65,7 +65,6 @@ function turn(slotId, player) {
 
 	if(player === huPlayer){
 		let nextMove = miniMax(origBoard, aiPlayer, startDepth);
-		console.log(nextMove.index);
 		turn(nextMove.index, aiPlayer);
 	}
 }
@@ -155,7 +154,6 @@ function miniMax(board, player, depth) {
 
 		if(score.value === 1000) {
 			player === huPlayer ? score.value *= -1 : score.value;
-			console.log("connect four at index: " + score.index);
 			return score;
 		}
 
