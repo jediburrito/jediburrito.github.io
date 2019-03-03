@@ -1,7 +1,7 @@
 var origBoard;
 let huPlayer = "red";
 let aiPlayer = "black";
-var startDepth = 12;
+var startDepth = 9;
 
 const slots = document.querySelectorAll('.slot');
 startGame();
