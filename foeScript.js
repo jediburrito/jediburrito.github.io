@@ -1,9 +1,7 @@
-var origBoard = new Array(6);
+var origBoard;
 let huPlayer = "red";
 let aiPlayer = "black";
 var startDepth = 2;
-for(let i = 6; i < 6; i++)
-	origBoard[i] = new Array(7);
 
 const slots = document.querySelectorAll('.slot');
 startGame();
@@ -11,14 +9,17 @@ startGame();
 function selectFirst(sym) {
 	huPlayer = sym;
 	aiPlayer = sym === "black" ? "red": "black";
-	origBoard = new Array(6); 
-		for(let i = 0;  i < 6; i++) 
-			origBoard[i] = new Array(7).fill("white");
+	origBoard = new Array(6);
+
+	for(let i = 0;  i < 6; i++) 
+		origBoard[i] = new Array(7).fill("white");
 	
-	for(let i = 0; i < slots.length; i++)
+	for(let i = 0; i < slots.length; i++) {
+		slots[i].style.backgroundColor = "white";
 		slots[i].addEventListener('click', turnClick, false);
+	}
 	
-	if(huPlayer === "black") 
+	if(huPlayer === "black")
 		turn(miniMax(origBoard, aiPlayer, startDepth).index, aiPlayer);
 	
 	document.querySelector('.selectFirst').style.display = "none";
@@ -28,9 +29,10 @@ function startGame() {
 	document.querySelector('.endgame').style.display = "none";
 	document.querySelector('.endgame .text').innerText = "";
 	document.querySelector('.selectFirst').style.display = "block";
-	for(let i = 0; i < slots.length; i++) {
-		slots[i].style.backgroundColor = "white";
-	}
+
+	for (let i = 0; i < slots.length; i++) 
+		slots[i].removeEventListener('click', turnClick, false);
+	
 }
 
 function turnClick(square) {
@@ -41,6 +43,7 @@ function turnClick(square) {
 function turn(slotId, player) {
 	if(document.getElementById(slotId).style.backgroundColor !== "white")
 		return;
+
 	while(slotId < 35) {
 		slotId += 7;
 		if(document.getElementById(slotId).style.backgroundColor !== "white") {
@@ -51,9 +54,10 @@ function turn(slotId, player) {
 		document.getElementById(slotId - 7).style.backgroundColor = "white";
 		document.getElementById(slotId).style.backgroundColor = player;
 	}
+
 	origBoard[Math.floor(slotId/7)][Math.floor(slotId%7)] = player;
 
-	if(checkScore(origBoard, player, slotId) === 1000){
+	if(checkScore(origBoard, player, slotId) === 1000) {
 		gameOver(player);
 		return;
 	}
