@@ -10,7 +10,6 @@ function selectFirst(sym) {
 	huPlayer = sym;
 	aiPlayer = sym === "black" ? "red": "black";
 	origBoard = new Array(6);
-
 	for(let i = 0;  i < 6; i++) 
 		origBoard[i] = new Array(7).fill("white");
 	
@@ -30,8 +29,10 @@ function startGame() {
 	document.querySelector('.endgame .text').innerText = "";
 	document.querySelector('.selectFirst').style.display = "block";
 
-	for (let i = 0; i < slots.length; i++) 
+	for (let i = 0; i < slots.length; i++) {
+		slots[i].style.backgroundColor = "white";
 		slots[i].removeEventListener('click', turnClick, false);
+	}
 	
 }
 
@@ -190,7 +191,6 @@ function miniMax(board, player, depth) {
 		newBoard[Math.floor(index/7)][Math.floor(index%7)] = player;
 		
 		if(checkIfFull(newBoard)) {
-			console.log("endboard");
 			return scoreSort[0];
 		}
 		if(player === huPlayer)
@@ -203,13 +203,10 @@ function miniMax(board, player, depth) {
 		if(player === huPlayer)
 					scoreSort[0].value < bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
 
-			console.log("player: " + player + " index: " + bestScore.index + " score: " + bestScore.value );
 		newBoard[Math.floor(index/7)][Math.floor(index%7)] = "white"; 
 
 	}
 
 	//flip score for minMax
-	console.log("player: " + player);
-	console.log("score: " + bestScore.value + "index: " + bestScore.index);
 	return bestScore;
 }
