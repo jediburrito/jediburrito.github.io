@@ -1,7 +1,7 @@
 var origBoard = new Array(6);
 let huPlayer = "red";
 let aiPlayer = "black";
-var depth = 42;
+var startDepth = 2;
 for(let i = 6; i < 6; i++)
 	origBoard[i] = new Array(7);
 
@@ -19,7 +19,7 @@ function selectFirst(sym) {
 		slots[i].addEventListener('click', turnClick, false);
 	
 	if(huPlayer === "black") 
-		turn(miniMax(origBoard, aiPlayer, 2).index, aiPlayer);
+		turn(miniMax(origBoard, aiPlayer, startDepth).index, aiPlayer);
 	
 	document.querySelector('.selectFirst').style.display = "none";
 }
@@ -59,21 +59,10 @@ function turn(slotId, player) {
 	}
 
 	if(player === huPlayer){
-		let nextMove = miniMax(origBoard, aiPlayer, 2);
+		let nextMove = miniMax(origBoard, aiPlayer, startDepth);
 		console.log(nextMove.index);
 		turn(nextMove.index, aiPlayer);
-	}/*
-	else if(player === aiPlayer) {
-		if(checkIfFull(origBoard)) {
-			gameOver(player);
-			return;
-		}
-		let nextMove = miniMax(origBoard, huPlayer);
-		console.log(nextMove.index);
-		
-		turn(nextMove.index, huPlayer);
 	}
-	*/
 }
 
 
