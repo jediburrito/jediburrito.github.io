@@ -14,7 +14,8 @@ td{
 
 table{
 	background-color: yellow;
-	min-width: 20%;
+	min-width: 50%;
+	max-width: 80%;
 	position: absolute;
 	left: 50%;
 	margin-left: -400px;
