@@ -3,8 +3,7 @@ td{
 	border: 2px solid #333;
 	border-radius: 50%;
 	height: 100px;
-	max-width: 100px;
-	min-width: 50px;
+	width: 100px;
 	text-align: center;
 	vertical-align: center;
 	margin-left: -100px;
@@ -15,10 +14,10 @@ td{
 
 table{
 	background-color: yellow;
-	min-width: 30%;
+	min-width: 20%;
 	position: absolute;
 	left: 50%;
-	margin-left: -450px;
+	margin-left: -400px;
 	top: 50px;
 }
 
