@@ -3,7 +3,8 @@ td{
 	border: 2px solid #333;
 	border-radius: 50%;
 	height: 100px;
-	width: 100px;
+	max-width: 100px;
+	min-width: 50px;
 	text-align: center;
 	vertical-align: center;
 	margin-left: -100px;
