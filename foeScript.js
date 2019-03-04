@@ -100,7 +100,7 @@ function checkScore(board, player, slotId) {
 		x = 0;
 		y = -1;
 		}	
-		if(streak === 3)
+		if(streak > 3)
 			return 1000;
 		
 		score += 2*(streak*streak);
