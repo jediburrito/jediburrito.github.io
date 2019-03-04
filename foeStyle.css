@@ -15,10 +15,10 @@ td{
 
 table{
 	background-color: yellow;
-	min-width: 100px;
+	min-width: 30%;
 	position: absolute;
 	left: 50%;
-	margin-left: -550px;
+	margin-left: -450px;
 	top: 50px;
 }
 
