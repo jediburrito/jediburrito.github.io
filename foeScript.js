@@ -1,7 +1,7 @@
 var origBoard;
 let huPlayer = "red";
 let aiPlayer = "black";
-var startDepth = 10;
+var startDepth = 12;
 var availSlots = new Array(7);
 var bestIndex = 3;
 var minMaxxer = {alpha: -999, beta: 999};
