@@ -1,7 +1,10 @@
 var origBoard;
 let huPlayer = "red";
 let aiPlayer = "black";
-var startDepth = 4;
+var startDepth = 8;
+var availSlots = new Array(7);
+var bestIndex = 3;
+var minMaxxer = {alpha: -999, beta: 999};
 
 const slots = document.querySelectorAll('.slot');
 startGame();
@@ -12,14 +15,22 @@ function selectFirst(sym) {
 	origBoard = new Array(6);
 	for(let i = 0;  i < 6; i++) 
 		origBoard[i] = new Array(7).fill("white");
+
+	for(let i = 0; i < 7; i++) 
+		availSlots[i] = {column: i, row: 5, value: 0};
+
+	availSlots[3].value += 3;	
 	
 	for(let i = 0; i < slots.length; i++) {
 		slots[i].style.backgroundColor = "white";
 		slots[i].addEventListener('click', turnClick, false);
 	}
 	
-	if(huPlayer === "black")
-		turn(miniMax(origBoard, aiPlayer, startDepth).index, aiPlayer);
+	if(huPlayer === "black"){
+		const freshBoard = origBoard.slice();
+		miniMax(origBoard, aiPlayer, startDepth, availSlots, minMaxxer)
+		turn(bestIndex, aiPlayer, 0);
+	}
 	
 	document.querySelector('.selectFirst').style.display = "none";
 }
@@ -56,26 +67,46 @@ function turn(slotId, player) {
 		document.getElementById(slotId).style.backgroundColor = player;
 	}
 
-	origBoard[Math.floor(slotId/7)][Math.floor(slotId%7)] = player;
-
-	if(checkScore(origBoard, player, slotId) === 1000) {
+	origBoard[Math.floor(slotId/7)][slotId%7] = player;
+	availSlots[slotId%7].row--;
+	//printBoard(origBoard);
+	if(checkScore(origBoard, player, Math.floor(slotId/7), slotId%7) === 1000) {
 		gameOver(player);
 		return;
 	}
+	//console.log("column = " + slotId%7 + " row = " + availSlots[slotId%7])
 
 	if(player === huPlayer){
-		let nextMove = miniMax(origBoard, aiPlayer, startDepth);
-		turn(nextMove.index, aiPlayer);
+		let temp = miniMax(origBoard, aiPlayer, startDepth, availSlots, minMaxxer, 0);
+		console.log("value: " + temp);
+		turn(bestIndex, aiPlayer);
 	}
 }
 
+function gameOver(player) {
+	for (let i = 0; i < slots.length; i++) {
+		slots[i].removeEventListener('click', turnClick, false);
+	}
+	declareWinner(player === huPlayer ? "You win!" : "You Lose!");
+}
 
-function checkScore(board, player, slotId) {
-	slotId = nextSpot(board, slotId);
+function declareWinner(who) {
+	document.querySelector(".endgame").style.display = "block";
+	document.querySelector(".endgame .text").innerText = who;
+}
+
+function checkIfFull(availSlots) {
+	for(let i = 0; i < 7; i++){
+		if(availSlots[i].row >= 0)
+			return false;
+	}
+		
+	return true;
+}
+
+function checkScore(board, player, row, column) {
 	let streak = 0;
 	let score = 0;
-	let row = Math.floor(slotId/7);
-	let column = Math.floor(slotId%7);
 	let x = -1;
 	let y = -1;
 
@@ -105,106 +136,143 @@ function checkScore(board, player, slotId) {
 		
 		score += 2*(streak*streak);
 	}	
+	if(column === 3)
+		score += 3;
 		return score;
 }
 
-function gameOver(player) {
-	for (let i = 0; i < slots.length; i++) {
-		slots[i].removeEventListener('click', turnClick, false);
+function scoreUpdate(board, player, slotTemp) {
+	let otherPlayer = player === huPlayer ? aiPlayer : huPlayer;
+	for(let i = 0; i < 7; i++) {
+		slotTemp[i].value = checkScore(board, player, slotTemp[i].row, slotTemp[i].column);
+		slotTemp[i].value += (checkScore(board, otherPlayer, slotTemp[i].row, slotTemp[i].column)/2);
+		if(player === huPlayer)
+			slotTemp[i].value *= -1;
 	}
-	declareWinner(player === huPlayer ? "You win!" : "You Lose!");
-}
-
-function declareWinner(who) {
-	document.querySelector(".endgame").style.display = "block";
-	document.querySelector(".endgame .text").innerText = who;
-
-}
-
-function checkIfFull(board) {
-	for(let i = 0; i < 7; i++)
-		if(board[0][i] === "white")
-			return false;
-	return true;
+	return slotTemp;
 }
 
 function nextSpot(board, slotId) {
-	while(slotId < 35 && board[Math.floor((slotId + 7)/7)][Math.floor((slotId + 7)%7)] === "white") 
+	while(slotId < 35 && board[Math.floor((slotId + 7)/7)][(slotId + 7)%7] === "white") 
 		slotId += 7;
 
 	return slotId;
 }
 
-function miniMax(board, player, depth) {
-	var scoreSort = [];
-	var values = new Array(7);
-	var otherPlayer = player === aiPlayer ? huPlayer : aiPlayer;
-	//create newBoard for next move
-	var newBoard = new Array(6);
-		for(let i = 0; i < 6; i++) {
-			newBoard[i] = new Array(7);
-			for(let j = 0; j < 7; j++)
-				newBoard[i][j] = board[i][j];
-		}
-		//check and sort each next slot value. if slot not available pass.
+function scoreSort(player , scoreTemp) {
+	if(player === aiPlayer)
+	scoreTemp.sort(function(a,b) {
+		return a.value - b.value;
+	}).reverse(function(a,b) {
+		return a.value - b.value;
+	});
+	return scoreTemp;
+}
+function printBoard(board) {
+	for(let i = 0; i < 6; i++)
+			console.log(board[i][0] + board[i][1] + board[i][2] + board[i][3] + board[i][4] + board[i][5] + board[i][6]);
+}
+
+function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
+	
+	let otherPlayer = player === huPlayer ? aiPlayer: huPlayer;
+	let	bestScore =  player === huPlayer ? 999 : -999;
+	scoreTemp = scoreUpdate(newBoard, player, scoreTemp);
+	scoreTemp = scoreSort(player, scoreTemp);
+	//console.log("Player: " + player);
+	
 	for(let i = 0; i < 7; i++) {
-		if(newBoard[0][i] === "white") {
-			let score = {value: checkScore(newBoard, player, i), index: i};
-		
-
-		if(score.value === 1000) {
-			player === huPlayer ? score.value *= -1 : score.value;
-			return score;
+		if(scoreTemp[i].row >= 0) {
+		let temp = total;
+		newBoard[scoreTemp[i].row][scoreTemp[i].column] = player;
+		scoreTemp[i].row--;
+		if(Math.abs(scoreTemp[i].value) >= 1000){
+			bestIndex = scoreTemp[i].column;
+			return scoreTemp[i].value;
 		}
+		
+		temp += scoreTemp[i].value;
 
-		if(i === 3)
-			score.value += 3;
-		//checkScore for other player and award half points
-		score.value += Math.floor((checkScore(newBoard, otherPlayer, i)/2));
+		temp = miniMax(newBoard, otherPlayer, depth, scoreTemp, newMinMaxxer, temp);	
+		//maximizer
 
-		let index = scoreSort.length;
-		if(index === 0)
-			scoreSort.push(score);
-		else {
-		while(index- 1 >= 0 && score.value > scoreSort[index - 1].value) index--;
-		scoreSort.splice(index, 0, score);
+		if(player === aiPlayer) {
+			if(temp > bestScore) {
+			 bestScore = temp;
+			 bestIndex = scoreTemp[i].column;
 			}
+
+			if(bestScore.value > newMinMaxxer.alpha) newMinMaxxer.alpha = bestScore;
+
+			if(bestScore >= 1000){
+			 return bestScore;
+			}
+		
+			if(bestScore >= newMinMaxxer.beta) 
+				return bestScore;
+		}
+
+		//minimizer
+		if(player === huPlayer) {
+			if(temp < bestScore) {
+			 bestScore = temp;
+			 bestIndex = scoreTemp[i].column;
+			}
+
+			if(bestScore < newMinMaxxer.beta) newMinMaxxer.beta = bestScore;
+			
+			if(bestScore <= -1000) {
+				console.log("-1000 at row:  " + scoreTemp.row + " column: " + scoreTemp.column);
+			 return bestScore;
+			}
+
+			if(bestScore.value <= newMinMaxxer.alpha)
+				return bestScore;
+		}
+
+		if(checkIfFull(scoreTemp))
+			return bestScore;
+		
+		scoreTemp[i].row++;
+		newBoard[scoreTemp[i].row][scoreTemp[i].column] = "white"; 
 		}
 	}
-		if(depth === 0) {
-			player === huPlayer ? scoreSort[0].value *= -1: scoreSort[0].value;
-			return scoreSort[0];
-		}
-
-	let	bestScore = {value: -1000, index: 0};
-
-		if(player === huPlayer)
-			bestScore.value = 1000;
-
-	//replace checkScore with miniMax score at index. Max score for aiPlayer, Min for huPlayer
-		depth--;
-
-	for(let i = 0; i < scoreSort.length; i++) {
-		let index = nextSpot(newBoard, scoreSort[0].index);
-		newBoard[Math.floor(index/7)][Math.floor(index%7)] = player;
-		
-		if(checkIfFull(newBoard)) {
-			return scoreSort[0];
-		}
-		if(player === huPlayer)
-			scoreSort[0] *= -1;
-		scoreSort[0].value += miniMax(newBoard, otherPlayer, depth).value;
-
-		if(player === aiPlayer)
-				scoreSort[0].value > bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
-		
-		if(player === huPlayer)
-					scoreSort[0].value < bestScore.value ? bestScore = scoreSort.shift() : scoreSort.shift();
-
-		newBoard[Math.floor(index/7)][Math.floor(index%7)] = "white"; 
-
-	}
-
-	//flip score for minMax
 	return bestScore;
+}
+
+function copy(o) {
+   var output, v, key;
+   output = Array.isArray(o) ? [] : {};
+   for (key in o) {
+       v = o[key];
+       output[key] = (typeof v === "object") ? copy(v) : v;
+   }
+   return output;
+}
+
+//miniMaxfunction max === aiPlayer min === huPlayer
+function miniMax(freshBoard, player, depth, nextSlots, minMaxxer, total) {
+	//create new boardState for traversal	
+	let temp = {value: 0, index: 0};
+	const newBoard = new Array(6);
+	for(let i = 0; i < 6; i++)
+		newBoard[i] = freshBoard[i].slice();
+	
+
+	let scoreTemp = copy(nextSlots);
+	if(checkIfFull(scoreTemp))
+			return temp;
+
+	if(depth === 0) {
+		scoreTemp = scoreSort(player, scoreTemp);
+		bestIndex = scoreTemp[0].column; 
+		//console.log("value " + bestScore.value);
+
+		return scoreTemp.value + total;
+	}
+	//console.log(availSlots[0].maxValue);
+	let newMinMaxxer = copy(minMaxxer);
+
+	//sort scoreSorter to sort slots for traversal
+	return traverse(newBoard, player, depth - 1, scoreTemp, newMinMaxxer, total);
 }
