@@ -197,7 +197,12 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		let temp = total;
 		newBoard[scoreTemp[i].row][scoreTemp[i].column] = player;
 		scoreTemp[i].row--;
-		
+		if(player === aiPlayer && scoreTemp[i].value >= 1000) {
+		return (2000 - depth);
+		}
+		if(player === huPlayer && scoreTemp[i].value <= -1000) {
+		return ((2000 * -1) + depth);
+		}
 		temp += scoreTemp[i].value;
 
 		temp = miniMax(newBoard, otherPlayer, depth, scoreTemp, newMinMaxxer, temp);	
