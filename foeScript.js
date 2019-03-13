@@ -107,31 +107,38 @@ function checkIfFull(availSlots) {
 }
 
 function checkScore(board, player, row, column) {
-	let streak = 0;
-	let blankStreak = 0;
-	let score = 0;
+	let streak = blankStreak = score = 0;
+	let bSwitch = true;
 	let x = -1;
 	let y = -1;
 
 	for(let i = 0; i < 4; i++) {
 		streak = blankStreak = 0;
+		bSwitch = true;
 		for(let j = 1; j < 4; j++) {
 			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0){ 	
-				if(board[row + (x * j)][column + (y * j)] === player) 
+				if(board[row + (x * j)][column + (y * j)] === player && bSwitch) 
 					streak++;
-				else
+				else {
+					bSwitch = false;
 					streak = 0;
+				}
 				blankStreak++;
 			}
 				
 				else break;
 		}
 		
+		bSwitch = true;
+		
 		for(let j = 1; j < 4; j++) {
 			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0) {
 				if(board[row - (x * j)][column - (y * j)] === player)
 					streak++;
-				else streak = 0
+				else {
+					bSwitch = false;
+					streak = 0
+				}
 				blankStreak++;
 			}
 				else break;
