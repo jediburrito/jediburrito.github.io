@@ -207,9 +207,9 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 				bestIndex = scoreTemp[i].column;
 		return ((2000 * -1) + depth);
 		}
-		
-		temp = miniMax(newBoard, otherPlayer, depth, scoreTemp, newMinMaxxer, temp);
-		temp += scoreTemp[i].value;	
+		temp += scoreTemp[i].value;
+		temp += miniMax(newBoard, otherPlayer, depth, scoreTemp, newMinMaxxer, temp);
+			
 		//maximizer
 		//TODO
 		if(player === aiPlayer) {
