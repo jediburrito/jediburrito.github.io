@@ -1,7 +1,7 @@
 var origBoard;
 let huPlayer = "red";
 let aiPlayer = "black";
-var startDepth = 14;
+var startDepth = 8;
 var availSlots = new Array(7);
 var bestIndex = 3;
 var minMaxxer = {alpha: -999, beta: 999};
@@ -13,7 +13,7 @@ function selectFirst(sym) {
 	huPlayer = sym;
 	aiPlayer = sym === "black" ? "red": "black";
 	origBoard = new Array(6);
-	startDepth = 16;
+	startDepth = 8;
 	for(let i = 0;  i < 6; i++) 
 		origBoard[i] = new Array(7).fill("white");
 
@@ -56,7 +56,7 @@ function turnClick(square) {
 function turn(slotId, player) {
 	if(document.getElementById(slotId).style.backgroundColor !== "white")
 		return;
-	//startDepth++;
+	startDepth++;
 	console.log("startDepth: " + startDepth);
 	while(slotId < 35) {
 		slotId += 7;
