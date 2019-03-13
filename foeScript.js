@@ -276,7 +276,6 @@ function miniMax(freshBoard, player, depth, nextSlots, minMaxxer, total) {
 	}
 	//console.log(availSlots[0].maxValue);
 	let newMinMaxxer = copy(minMaxxer);
-
 	//sort scoreSorter to sort slots for traversal
-	return traverse(newBoard, player, depth - 1, scoreTemp, newMinMaxxer, total);
+	return traverse(newBoard, player, depth--, scoreTemp, newMinMaxxer, total);
 }
