@@ -107,8 +107,10 @@ function checkIfFull(availSlots) {
 }
 
 function checkScore(board, player, row, column) {
-	let streak = blankStreak = score = 0;
-	bSwitch = true;
+	let streak = 0;
+	let blankStreak = 0;
+	let score = 0;
+	let bSwitch = true;
 	let x = -1;
 	let y = -1;
 
