@@ -200,16 +200,17 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		if(player === aiPlayer && scoreTemp[i].value >= 1000) {
 		return (2000 - depth);
 		}
-		if(player === huPlayer && scoreTemp[i].value <= -1000) {
+		else if(player === huPlayer && scoreTemp[i].value <= -1000) {
 		return ((2000 * -1) + depth);
 		}
 		temp += scoreTemp[i].value;
-
 		temp = miniMax(newBoard, otherPlayer, depth, scoreTemp, newMinMaxxer, temp);	
 		//maximizer
 		//TODO
 		if(player === aiPlayer) {
-			if(temp > bestScore) {
+			if(bestScore >= newMinMaxxer.beta) 
+				return bestScore;
+			if(temp >= bestScore) {
 			 bestScore = temp;
 			 bestIndex = scoreTemp[i].column;
 			}
@@ -218,22 +219,20 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 			}
 			
 			if(bestScore> newMinMaxxer.alpha) newMinMaxxer.alpha = bestScore;	
-			if(bestScore >= newMinMaxxer.beta) 
-				return bestScore;
 			
 		}
-
 		//minimizer
 		if(player === huPlayer) {
-			if(temp < bestScore) {
+			if(bestScore <= newMinMaxxer.alpha)
+				return bestScore;
+			if(temp <= bestScore) {
 			 bestScore = temp;
 			 bestIndex = scoreTemp[i].column;
 			}
 			if(bestScore <= -1000) {
 			 return bestScore;
 			}
-			if(bestScore <= newMinMaxxer.alpha)
-				return bestScore;
+			
 			if(temp < newMinMaxxer.beta) newMinMaxxer.beta = bestScore;
 		}
 
@@ -264,7 +263,6 @@ function miniMax(freshBoard, player, depth, nextSlots, minMaxxer, total) {
 	for(let i = 0; i < 6; i++)
 		newBoard[i] = freshBoard[i].slice();
 	
-
 	let scoreTemp = copy(nextSlots);
 	if(checkIfFull(scoreTemp))
 			return 0;
@@ -274,7 +272,6 @@ function miniMax(freshBoard, player, depth, nextSlots, minMaxxer, total) {
 		bestIndex = scoreTemp[0].column; 
 		return scoreTemp.value + total;
 	}
-	//console.log(availSlots[0].maxValue);
 	let newMinMaxxer = copy(minMaxxer);
 	//sort scoreSorter to sort slots for traversal
 	return traverse(newBoard, player, depth - 1, scoreTemp, newMinMaxxer, total);
