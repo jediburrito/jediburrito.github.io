@@ -209,11 +209,10 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		//maximizer
 		//TODO
 		if(player === aiPlayer) {
-			
 			if(temp >= newMinMaxxer.beta) 
-				return bestScore;
+				return temp;
+			if(temp > newMinMaxxer.alpha) newMinMaxxer.alpha = temp;
 			
-			if(temp > newMinMaxxer.alpha) newMinMaxxer.alpha = bestScore;
 			if(temp >= 1000){
 			bestIndex = scoreTemp[i].column;
 			 return temp;
@@ -226,9 +225,8 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 
 		//minimizer
 		if(player === huPlayer) {
-			
 			if(temp <= newMinMaxxer.alpha)
-				return bestScore;
+				return temp;
 			if(temp < newMinMaxxer.beta) newMinMaxxer.beta = temp;
 			
 			if(temp <= -1000) {
