@@ -1,7 +1,7 @@
 var origBoard;
 let huPlayer = "red";
 let aiPlayer = "black";
-var startDepth = 12;
+var startDepth = 1;
 var availSlots = new Array(7);
 var bestIndex = 3;
 var minMaxxer = {alpha: -999, beta: 999};
@@ -13,6 +13,7 @@ function selectFirst(sym) {
 	huPlayer = sym;
 	aiPlayer = sym === "black" ? "red": "black";
 	origBoard = new Array(6);
+	startDepth = 10;
 	for(let i = 0;  i < 6; i++) 
 		origBoard[i] = new Array(7).fill("white");
 
@@ -55,7 +56,8 @@ function turnClick(square) {
 function turn(slotId, player) {
 	if(document.getElementById(slotId).style.backgroundColor !== "white")
 		return;
-
+	//startDepth++;
+	console.log("startDepth: " + startDepth);
 	while(slotId < 35) {
 		slotId += 7;
 		if(document.getElementById(slotId).style.backgroundColor !== "white") {
@@ -106,23 +108,29 @@ function checkIfFull(availSlots) {
 
 function checkScore(board, player, row, column) {
 	let streak = 0;
+	let blankStreak = 0;
 	let score = 0;
 	let x = -1;
 	let y = -1;
 
 	for(let i = 0; i < 4; i++) {
-		streak = 0;
+		streak = blankStreak = 0;
 		for(let j = 1; j < 4; j++) {
-			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0) 	
+			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0){ 	
 				if(board[row + (x * j)][column + (y * j)] === player) 
 					streak++;
+				blankStreak++;
+			}
+				
 				else break;
 		}
 		
 		for(let j = 1; j < 4; j++) {
-			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0) 
+			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0) {
 				if(board[row - (x * j)][column - (y * j)] === player)
 					streak++;
+				blankStreak++;
+			}
 				else break;
 		}
 
@@ -134,6 +142,7 @@ function checkScore(board, player, row, column) {
 		if(streak >= 3)
 			return 1000;
 		
+		if(blankStreak >= 3)
 		score += 2*(streak*streak);
 	}	
 	if(column === 3)
@@ -168,10 +177,6 @@ function scoreSort(player , scoreTemp) {
 	});
 	return scoreTemp;
 }
-function printBoard(board) {
-	for(let i = 0; i < 6; i++)
-			console.log(board[i][0] + board[i][1] + board[i][2] + board[i][3] + board[i][4] + board[i][5] + board[i][6]);
-}
 
 function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 	
@@ -179,14 +184,14 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 	let	bestScore =  player === huPlayer ? 999 : -999;
 	scoreTemp = scoreUpdate(newBoard, player, scoreTemp);
 	scoreTemp = scoreSort(player, scoreTemp);
-	//console.log("Player: " + player);
-	
+
 	for(let i = 0; i < 7; i++) {
 		if(scoreTemp[i].row >= 0) {
 		let temp = total;
 		newBoard[scoreTemp[i].row][scoreTemp[i].column] = player;
 		scoreTemp[i].row--;
 		if(Math.abs(scoreTemp[i].value) >= 1000){
+			console.log("win at row:  " + (scoreTemp[i].row + 1) + " column: " + scoreTemp[i].column);
 			bestIndex = scoreTemp[i].column;
 			return scoreTemp[i].value;
 		}
@@ -222,7 +227,6 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 			if(bestScore < newMinMaxxer.beta) newMinMaxxer.beta = bestScore;
 			
 			if(bestScore <= -1000) {
-				console.log("-1000 at row:  " + scoreTemp.row + " column: " + scoreTemp.column);
 			 return bestScore;
 			}
 
