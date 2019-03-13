@@ -175,6 +175,16 @@ function nextSpot(board, slotId) {
 	return slotId;
 }
 
+function copy(o) {
+   var output, v, key;
+   output = Array.isArray(o) ? [] : {};
+   for (key in o) {
+       v = o[key];
+       output[key] = (typeof v === "object") ? copy(v) : v;
+   }
+   return output;
+}
+
 function scoreSort(player , scoreTemp) {
 	if(player === aiPlayer)
 	scoreTemp.sort(function(a,b) {
@@ -186,9 +196,9 @@ function scoreSort(player , scoreTemp) {
 }
 
 function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
-	
+
 	let otherPlayer = player === huPlayer ? aiPlayer: huPlayer;
-	let	bestScore =  player === huPlayer ? 999 : -999;
+	let bestScore =  player === huPlayer ? 999 : -999;
 	scoreTemp = scoreUpdate(newBoard, player, scoreTemp);
 	scoreTemp = scoreSort(player, scoreTemp);
 
@@ -198,13 +208,9 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		newBoard[scoreTemp[i].row][scoreTemp[i].column] = player;
 		scoreTemp[i].row--;
 		if(player === aiPlayer && scoreTemp[i].value >= 1000) {
-			if(depth === 0)
-				bestIndex = scoreTemp[i].column;
 		return (2000 - depth);
 		}
 		else if(player === huPlayer && scoreTemp[i].value <= -1000) {
-			if(depth === 0)
-				bestIndex = scoreTemp[i].column;
 		return ((2000 * -1) + depth);
 		}
 		
@@ -213,32 +219,34 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		//maximizer
 		//TODO
 		if(player === aiPlayer) {
-			if(temp >= newMinMaxxer.beta) 
-				return temp;
+			if(temp >= 1000){
+			bestIndex = scoreTemp[i].column;
+			 return bestScore;
+			}
 			if(temp >= bestScore) {
 			 bestScore = temp;
 			 bestIndex = scoreTemp[i].column;
 			}
-			if(bestScore >= 1000){
-			 return bestScore;
-			}
+			if(bestScore >= newMinMaxxer.beta) 
+				return bestScore;
 			
-			if(bestScore> newMinMaxxer.alpha) newMinMaxxer.alpha = bestScore;	
-			
+			if(bestScore > newMinMaxxer.alpha) newMinMaxxer.alpha = bestScore;	
 		}
 		//minimizer
 		if(player === huPlayer) {
-			if(temp <= newMinMaxxer.alpha)
-				return temp;
+			if(bestScore <= -1000) {
+			bestIndex = scoreTemp[i].column;
+			 return bestScore;
+			}
 			if(temp <= bestScore) {
 			 bestScore = temp;
 			 bestIndex = scoreTemp[i].column;
 			}
-			if(bestScore <= -1000) {
-			 return bestScore;
-			}
 			
-			if(temp < newMinMaxxer.beta) newMinMaxxer.beta = bestScore;
+			if(bestScore <= newMinMaxxer.alpha)
+				return bestScore;
+			
+			if(bestScore < newMinMaxxer.beta) newMinMaxxer.beta = bestScore;
 		}
 
 		if(checkIfFull(scoreTemp))
@@ -249,16 +257,6 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		}
 	}
 	return bestScore;
-}
-
-function copy(o) {
-   var output, v, key;
-   output = Array.isArray(o) ? [] : {};
-   for (key in o) {
-       v = o[key];
-       output[key] = (typeof v === "object") ? copy(v) : v;
-   }
-   return output;
 }
 
 //miniMaxfunction max === aiPlayer min === huPlayer
