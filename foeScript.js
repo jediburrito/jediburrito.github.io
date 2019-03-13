@@ -199,10 +199,10 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		newBoard[scoreTemp[i].row][scoreTemp[i].column] = player;
 		scoreTemp[i].row--;
 		if(player === aiPlayer && scoreTemp[i].value >= 1000) {
-			return 2000 - depth;
+			return (2000 - (depth * 10));
 		}
 		else if(player === huPlayer && scoreTemp[i].value <= -1000) {
-			return -2000 + depth;
+			return (-2000 + (depth * 10));
 		}
 		
 		temp += scoreTemp[i].value;
