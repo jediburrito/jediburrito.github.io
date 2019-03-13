@@ -13,7 +13,7 @@ function selectFirst(sym) {
 	huPlayer = sym;
 	aiPlayer = sym === "black" ? "red": "black";
 	origBoard = new Array(6);
-	startDepth = 8;
+	startDepth = 9;
 	for(let i = 0;  i < 6; i++) 
 		origBoard[i] = new Array(7).fill("white");
 
@@ -199,11 +199,9 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		newBoard[scoreTemp[i].row][scoreTemp[i].column] = player;
 		scoreTemp[i].row--;
 		if(player === aiPlayer && scoreTemp[i].value >= 1000) {	
-				bestIndex = scoreTemp[i].column;
 			return (2000 - (depth * 10));
 		}
 		else if(player === huPlayer && scoreTemp[i].value <= -1000) {
-				bestIndex = scoreTemp[i];
 			return (-2000 + (depth * 10));
 		}
 		
