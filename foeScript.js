@@ -203,7 +203,8 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		return (2000 - depth);
 		}
 		else if(player === huPlayer && scoreTemp[i].value <= -1000) {
-			bestIndex = scoreTemp[i].column;
+			if(depth === 0)
+				bestIndex = scoreTemp[i].column;
 		return ((2000 * -1) + depth);
 		}
 		temp += scoreTemp[i].value;
