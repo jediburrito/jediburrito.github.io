@@ -260,7 +260,6 @@ function copy(o) {
 //miniMaxfunction max === aiPlayer min === huPlayer
 function miniMax(freshBoard, player, depth, nextSlots, minMaxxer, total) {
 	//create new boardState for traversal	
-	let temp = {value: 0, index: 0};
 	const newBoard = new Array(6);
 	for(let i = 0; i < 6; i++)
 		newBoard[i] = freshBoard[i].slice();
@@ -268,13 +267,11 @@ function miniMax(freshBoard, player, depth, nextSlots, minMaxxer, total) {
 
 	let scoreTemp = copy(nextSlots);
 	if(checkIfFull(scoreTemp))
-			return temp;
+			return 0;
 
 	if(depth === 0) {
 		scoreTemp = scoreSort(player, scoreTemp);
 		bestIndex = scoreTemp[0].column; 
-		//console.log("value " + bestScore.value);
-
 		return scoreTemp.value + total;
 	}
 	//console.log(availSlots[0].maxValue);
