@@ -56,7 +56,7 @@ function turnClick(square) {
 function turn(slotId, player) {
 	if(document.getElementById(slotId).style.backgroundColor !== "white")
 		return;
-	if(player === aiPlayer) startDepth++;
+	//if(player === aiPlayer) startDepth++;
 	console.log("startDepth: " + startDepth);
 	while(slotId < 35) {
 		slotId += 7;
