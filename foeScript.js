@@ -198,10 +198,11 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		let temp = total;
 		newBoard[scoreTemp[i].row][scoreTemp[i].column] = player;
 		scoreTemp[i].row--;
-		if(Math.abs(scoreTemp[i].value) >= 1000){
-			console.log("win at row:  " + (scoreTemp[i].row + 1) + " column: " + scoreTemp[i].column);
-			bestIndex = scoreTemp[i].column;
-			return scoreTemp[i].value;
+		if(player === aiPlayer && scoreTemp[i].value >= 1000) {
+			return 2000 - depth;
+		}
+		else if(player === huPlayer && scoreTemp[i].value <= -1000) {
+			return -2000 + depth;
 		}
 		
 		temp += scoreTemp[i].value;
