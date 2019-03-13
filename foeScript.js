@@ -209,35 +209,32 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		//maximizer
 		//TODO
 		if(player === aiPlayer) {
-			if(temp >= newMinMaxxer.beta) 
-				return temp;
-			if(temp > newMinMaxxer.alpha) newMinMaxxer.alpha = temp;
-			
-			if(temp >= 1000){
-			bestIndex = scoreTemp[i].column;
-			 return temp;
-			}
 			if(temp > bestScore) {
 			 bestScore = temp;
 			 bestIndex = scoreTemp[i].column;
-			}	
+			}
+			if(bestScore >= 1000){
+			 return bestScore;
+			}
+			
+			if(bestScore> newMinMaxxer.alpha) newMinMaxxer.alpha = bestScore;	
+			if(bestScore >= newMinMaxxer.beta) 
+				return bestScore;
+			
 		}
 
 		//minimizer
 		if(player === huPlayer) {
-			if(temp <= newMinMaxxer.alpha)
-				return temp;
-			if(temp < newMinMaxxer.beta) newMinMaxxer.beta = temp;
-			
-			if(temp <= -1000) {
-			bestIndex = scoreTemp[i].column;
-			 return temp;
-			}
-			
 			if(temp < bestScore) {
 			 bestScore = temp;
 			 bestIndex = scoreTemp[i].column;
 			}
+			if(bestScore <= -1000) {
+			 return bestScore;
+			}
+			if(bestScore <= newMinMaxxer.alpha)
+				return bestScore;
+			if(temp < newMinMaxxer.beta) newMinMaxxer.beta = bestScore;
 		}
 
 		if(checkIfFull(scoreTemp))
