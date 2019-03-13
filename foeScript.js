@@ -119,6 +119,8 @@ function checkScore(board, player, row, column) {
 			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0){ 	
 				if(board[row + (x * j)][column + (y * j)] === player) 
 					streak++;
+				else
+					streak = 0;
 				blankStreak++;
 			}
 				
@@ -129,6 +131,7 @@ function checkScore(board, player, row, column) {
 			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0) {
 				if(board[row - (x * j)][column - (y * j)] === player)
 					streak++;
+				else streak = 0
 				blankStreak++;
 			}
 				else break;
