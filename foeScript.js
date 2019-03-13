@@ -208,7 +208,7 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		return ((2000 * -1) + depth);
 		}
 		temp += scoreTemp[i].value;
-		temp += miniMax(newBoard, otherPlayer, depth, scoreTemp, newMinMaxxer, temp);
+		temp = miniMax(newBoard, otherPlayer, depth, scoreTemp, newMinMaxxer, temp);
 			
 		//maximizer
 		//TODO
