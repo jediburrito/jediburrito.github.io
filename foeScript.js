@@ -108,7 +108,7 @@ function checkIfFull(availSlots) {
 
 function checkScore(board, player, row, column) {
 	let streak = blankStreak = score = 0;
-	let bSwitch = true;
+	bSwitch = true;
 	let x = -1;
 	let y = -1;
 
@@ -119,9 +119,8 @@ function checkScore(board, player, row, column) {
 			if(row + (x * j) < 6 && row + (x * j) >= 0 && column + (y * j) < 7 && column + (y * j) >= 0){ 	
 				if(board[row + (x * j)][column + (y * j)] === player && bSwitch) 
 					streak++;
-				else 
+				else
 					bSwitch = false;
-				
 				blankStreak++;
 			}
 				
@@ -129,14 +128,13 @@ function checkScore(board, player, row, column) {
 		}
 		
 		bSwitch = true;
-		
+
 		for(let j = 1; j < 4; j++) {
 			if(row - (x * j) < 6 && row - (x * j) >= 0 && column - (y * j) < 7 && column - (y * j) >= 0) {
-				if(board[row - (x * j)][column - (y * j)] === player)
+				if(board[row - (x * j)][column - (y * j)] === player && bSwitch)
 					streak++;
-				else 
+				else
 					bSwitch = false;
-				
 				blankStreak++;
 			}
 				else break;
@@ -149,7 +147,7 @@ function checkScore(board, player, row, column) {
 		}	
 		if(streak >= 3)
 			return 1000;
-		
+
 		if(blankStreak >= 3)
 		score += 2*(streak*streak);
 	}	
