@@ -76,7 +76,6 @@ function turn(slotId, player) {
 		gameOver(player);
 		return;
 	}
-	//console.log("column = " + slotId%7 + " row = " + availSlots[slotId%7])
 
 	if(player === huPlayer){
 		let temp = miniMax(origBoard, aiPlayer, startDepth, availSlots, minMaxxer, 0);
@@ -203,38 +202,39 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 
 		temp = miniMax(newBoard, otherPlayer, depth, scoreTemp, newMinMaxxer, temp);	
 		//maximizer
-
+		//TODO
 		if(player === aiPlayer) {
+			
+			if(temp >= newMinMaxxer.beta) 
+				return bestScore;
+			
+			if(temp > newMinMaxxer.alpha) newMinMaxxer.alpha = bestScore;
+			if(temp >= 1000){
+			bestIndex = scoreTemp[i].column;
+			 return temp;
+			}
 			if(temp > bestScore) {
 			 bestScore = temp;
 			 bestIndex = scoreTemp[i].column;
-			}
-
-			if(bestScore.value > newMinMaxxer.alpha) newMinMaxxer.alpha = bestScore;
-
-			if(bestScore >= 1000){
-			 return bestScore;
-			}
-		
-			if(bestScore >= newMinMaxxer.beta) 
-				return bestScore;
+			}	
 		}
 
 		//minimizer
 		if(player === huPlayer) {
+			
+			if(temp <= newMinMaxxer.alpha)
+				return bestScore;
+			if(temp < newMinMaxxer.beta) newMinMaxxer.beta = temp;
+			
+			if(temp <= -1000) {
+			bestIndex = scoreTemp[i].column;
+			 return temp;
+			}
+			
 			if(temp < bestScore) {
 			 bestScore = temp;
 			 bestIndex = scoreTemp[i].column;
 			}
-
-			if(bestScore < newMinMaxxer.beta) newMinMaxxer.beta = bestScore;
-			
-			if(bestScore <= -1000) {
-			 return bestScore;
-			}
-
-			if(bestScore.value <= newMinMaxxer.alpha)
-				return bestScore;
 		}
 
 		if(checkIfFull(scoreTemp))
