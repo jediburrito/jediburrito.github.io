@@ -1,7 +1,7 @@
 var origBoard;
 let huPlayer = "red";
 let aiPlayer = "black";
-var startDepth = 2;
+var startDepth = 0;
 var availSlots = new Array(7);
 var bestIndex = 3;
 var minMaxxer = {alpha: -999, beta: 999};
@@ -10,18 +10,23 @@ const slots = document.querySelectorAll('.slot');
 startGame();
 
 function selectFirst(sym) {
+	//reinitialize board values
 	huPlayer = sym;
 	aiPlayer = sym === "black" ? "red": "black";
 	origBoard = new Array(6);
-	startDepth = 0;
+	startDepth = 4;
+
+	//initialize arrays for MiniMax function
 	for(let i = 0;  i < 6; i++) 
 		origBoard[i] = new Array(7).fill("white");
 
 	for(let i = 0; i < 7; i++) 
 		availSlots[i] = {column: i, row: 5, value: 0};
 
+	//center square is valued greater
 	availSlots[3].value += 3;	
 	
+	//clear board and initialize event listeners
 	for(let i = 0; i < slots.length; i++) {
 		slots[i].style.backgroundColor = "white";
 		slots[i].addEventListener('click', turnClick, false);
@@ -34,12 +39,14 @@ function selectFirst(sym) {
 	}
 	
 	document.querySelector('.selectFirst').style.display = "none";
+	document.querySelector('.replayBtn').style.display = "block";
 }
 
 function startGame() {
 	document.querySelector('.endgame').style.display = "none";
 	document.querySelector('.endgame .text').innerText = "";
 	document.querySelector('.selectFirst').style.display = "block";
+	document.querySelector('.replayBtn').style.display = "none";
 
 	for (let i = 0; i < slots.length; i++) {
 		slots[i].style.backgroundColor = "white";
@@ -77,7 +84,7 @@ function turn(slotId, player) {
 	//console.log("column = " + slotId%7 + " row = " + availSlots[slotId%7])
 
 	if(player === huPlayer){
-		if(startDepth <= 12)
+		if(startDepth <= 14)
 			startDepth += 2;
 		let temp = miniMax(origBoard, aiPlayer, startDepth, availSlots, minMaxxer, 0);
 		turn(bestIndex, aiPlayer);
@@ -159,9 +166,10 @@ function checkScore(board, player, row, column) {
 
 function scoreUpdate(board, player, slotTemp) {
 	let otherPlayer = player === huPlayer ? aiPlayer : huPlayer;
+
 	for(let i = 0; i < 7; i++) {
 		slotTemp[i].value = checkScore(board, player, slotTemp[i].row, slotTemp[i].column);
-		slotTemp[i].value += (checkScore(board, otherPlayer, slotTemp[i].row, slotTemp[i].column)/2);
+		slotTemp[i].value += (checkScore(board, otherPlayer, slotTemp[i].row, slotTemp[i].column)/1.5);
 		if(player === huPlayer)
 			slotTemp[i].value *= -1;
 	}

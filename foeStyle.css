@@ -1,26 +1,25 @@
 
+
+
+table{
+	background-color: yellow;
+	position: center;
+	overflow-x: scroll;
+}
 td{
 	background-color: white;
 	border: 2px solid #333;
 	border-radius: 50%;
-	height: 100px;
-	width: 100px;
+	height: 80px;
+	max-height: 100px;
+	min-width: 80px;
+	max-width: 100px;
 	text-align: center;
 	vertical-align: center;
 	margin-left: -100px;
 	font-family: "Comic Sans MS",  cursive, sans-serif;
 	font-size: 70px;
 	cursor: pointer;
-}
-
-table{
-	background-color: yellow;
-	min-width: 50%;
-	max-width: 80%;
-	position: absolute;
-	left: 50%;
-	margin-left: -400px;
-	top: 70px;
 }
 
 table tr: first-child td {
@@ -43,9 +42,13 @@ table tr td: last-child {
 	border-right: 0;
 }
 
+
+
 body{
 	font-size: 10px;
 }
+
+
 
 .endgame {
 	display: none;
@@ -79,17 +82,22 @@ body{
 	font-size: 5em;
 }
 .selectFirst {
-	font-size: 25px;
-}
-.selectFirst button {
-	font-family: "Comic Sans MS", cursive, sans-serif;
 	font-size: 20px;
-	width: 90px;
-	margin-bottom: 10px;
 }
 
-button {
-	font-family: "Comic Sans MS", cursive, sans-serif;
-	font-size: 20px;
+.selectFirst button{
+	height: 80px;
 	width: 90px;
+	border-radius: 50%;
+	margin-bottom: 10px;
+	background-color: red;
+}
+
+.replayBtn {
+	font-family: "Comic Sans MS", cursive, sans-serif;
+	width: 90px;
+	margin-bottom: 10px;
+	display: none;
+	font-size: 20px;
+
 }
