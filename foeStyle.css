@@ -1,10 +1,11 @@
-
-
-
+.board{
+	overflow-x: scroll;
+	position: center;	
+}
 table{
 	background-color: yellow;
-	position: center;
-	overflow-x: scroll;
+	border-radius: 5px;
+
 }
 td{
 	background-color: white;
@@ -27,7 +28,7 @@ table tr: first-child td {
 	border-top: 0;
 }
 
-table tr: last-child td {
+ table tr: last-child td {
 	border-radius: 50%;
 	border-bottom: 0;
 }
@@ -47,7 +48,6 @@ table tr td: last-child {
 body{
 	font-size: 10px;
 }
-
 
 
 .endgame {
@@ -86,8 +86,8 @@ body{
 }
 
 .selectFirst button{
-	height: 80px;
-	width: 90px;
+	height:60px;
+	width:70px;
 	border-radius: 50%;
 	margin-bottom: 10px;
 	background-color: red;
