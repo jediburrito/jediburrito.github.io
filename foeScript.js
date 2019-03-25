@@ -84,7 +84,7 @@ function turn(slotId, player) {
 	//console.log("column = " + slotId%7 + " row = " + availSlots[slotId%7])
 
 	if(player === huPlayer){
-		if(startDepth <= 14)
+		if(startDepth <= 12)
 			startDepth += 2;
 		let temp = miniMax(origBoard, aiPlayer, startDepth, availSlots, minMaxxer, 0);
 		turn(bestIndex, aiPlayer);
