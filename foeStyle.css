@@ -1,20 +1,25 @@
 .board{
 	overflow-x: scroll;
-	position: center;	
+	position: center;
+	min-height: 30%;
+	min-width: 30%;
 }
 table{
 	background-color: yellow;
 	border-radius: 5px;
-
 }
 td{
 	background-color: white;
 	border: 2px solid #333;
 	border-radius: 50%;
+
 	height: 80px;
-	max-height: 100px;
-	min-width: 80px;
-	max-width: 100px;
+	min-height: 10%;
+	max-height: 100%;
+	
+	width: 80px;
+	min-width: 10%;
+	max-width: 100%;
 	text-align: center;
 	vertical-align: center;
 	margin-left: -100px;
