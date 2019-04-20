@@ -99,7 +99,7 @@ function gameOver(player) {
 	declareWinner("You win!");
 	else
 	window.location = "https://www.youtube.com/watch?v=u-8h24VVndE";
-
+}
 function declareWinner(who) {
 	document.querySelector(".endgame").style.display = "block";
 	document.querySelector(".endgame .text").innerText = who;
