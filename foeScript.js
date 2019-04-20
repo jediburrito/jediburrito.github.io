@@ -95,8 +95,10 @@ function gameOver(player) {
 	for (let i = 0; i < slots.length; i++) {
 		slots[i].removeEventListener('click', turnClick, false);
 	}
-	declareWinner(player === huPlayer ? "You win!" : "You Lose!");
-}
+	if(player === huPlayer)
+	declareWinner("You win!");
+	else
+	window.location = "https://www.youtube.com/watch?v=u-8h24VVndE";
 
 function declareWinner(who) {
 	document.querySelector(".endgame").style.display = "block";
