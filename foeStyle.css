@@ -1,8 +1,8 @@
 .board{
 	overflow-x: scroll;
-	position: center;
-	min-height: 40%;
-	min-width: 40%;
+	overflow-y: scroll;
+	min-height: 30%;
+	min-width: 30%;
 }
 table{
 	background-color: yellow;
@@ -14,11 +14,11 @@ td{
 	border-radius: 50%;
 
 	height: 80px;
-	min-height: 0%;
-	max-height: 120%;
+	min-height: 40%;
+	max-height: 100%;
 	
 	width: 80px;
-	min-width: 10%;
+	min-width: 40%;
 	max-width: 100%;
 	text-align: center;
 	vertical-align: center;
@@ -69,6 +69,16 @@ body{
 	border-radius: 5px;
 	color: white;
 	font-size: 10em;
+}
+
+.player {
+  display: none;
+  position: absolute;
+  left: 15%;
+  margin-left: -100px;
+  padding-bottom: 50px;
+  color: #000;
+  font-family: Arial, sans-serif;
 }
 
 .selectSym {

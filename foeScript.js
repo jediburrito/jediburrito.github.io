@@ -72,6 +72,7 @@ function turn(slotId, player) {
 		}
 		document.getElementById(slotId - 7).style.backgroundColor = "white";
 		document.getElementById(slotId).style.backgroundColor = player;
+
 	}
 
 	origBoard[Math.floor(slotId/7)][slotId%7] = player;
@@ -84,7 +85,7 @@ function turn(slotId, player) {
 	//console.log("column = " + slotId%7 + " row = " + availSlots[slotId%7])
 
 	if(player === huPlayer){
-		if(startDepth <= 12)
+		if(startDepth <= 14)
 			startDepth += 2;
 		let temp = miniMax(origBoard, aiPlayer, startDepth, availSlots, minMaxxer, 0);
 		turn(bestIndex, aiPlayer);
@@ -95,14 +96,19 @@ function gameOver(player) {
 	for (let i = 0; i < slots.length; i++) {
 		slots[i].removeEventListener('click', turnClick, false);
 	}
-	if(player === huPlayer)
-	declareWinner("You win!");
-	else
-	window.location = "https://www.youtube.com/watch?v=u-8h24VVndE";
+	
+	declareWinner(player === huPlayer ? "You win!" : "You Lose!");
+	
 }
+
 function declareWinner(who) {
-	document.querySelector(".endgame").style.display = "block";
 	document.querySelector(".endgame .text").innerText = who;
+	if (who === "You Lose!") { 
+	document.querySelector(".player").style.display = "block";	
+	document.querySelector("#play").src = "https://www.youtube.com/embed/u-8h24VVndE?rel=0;&autoplay=1";
+	}
+	else
+	document.querySelector(".endgame").style.display = "block";
 }
 
 function checkIfFull(availSlots) {
@@ -208,11 +214,11 @@ function traverse(newBoard, player, depth, scoreTemp, newMinMaxxer, total) {
 		scoreTemp[i].row--;
 		if(player === aiPlayer && scoreTemp[i].value >= 1000) {
 				bestIndex = scoreTemp[i].column;
-			return (2000 - depth);
+			return (2000 + (depth*3));
 		}
 		else if(player === huPlayer && scoreTemp[i].value <= -1000){
 				bestIndex = scoreTemp[i].column;
-			return (-2000 + depth);
+			return (-2000 - (depth*3));
 		}
 		temp = miniMax(newBoard, otherPlayer, depth, scoreTemp, newMinMaxxer, total + scoreTemp[i].value);
 		
