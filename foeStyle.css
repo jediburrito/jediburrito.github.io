@@ -25,16 +25,6 @@ table{
 	font-size: 10em;
 }
 
-.player {
-  display: none;
-  position: absolute;
-  left: 15%;
-  margin-left: -100px;
-  padding-bottom: 50px;
-  color: #000;
-  font-family: Arial, sans-serif;
-}
-
 td{
 	background-color: white;
 	border: 2px solid #333;
