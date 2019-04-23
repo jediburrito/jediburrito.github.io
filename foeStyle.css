@@ -71,6 +71,16 @@ body{
 	font-size: 10em;
 }
 
+.player {
+  display: none;
+  position: absolute;
+  left: 15%;
+  margin-left: -100px;
+  padding-bottom: 50px;
+  color: #000;
+  font-family: Arial, sans-serif;
+}
+
 .selectSym {
 	display: none;
 	width: 260px;
