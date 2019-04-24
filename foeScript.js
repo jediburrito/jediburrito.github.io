@@ -97,17 +97,12 @@ function gameOver(player) {
 		slots[i].removeEventListener('click', turnClick, false);
 	}
 	
-	declareWinner(player === huPlayer ? "You win!" : "Pepega Poo Poo Piker!");
+	declareWinner(player === huPlayer ? "You win!" : "You Lose!");
 	
 }
 
 function declareWinner(who) {
 	document.querySelector(".endgame .text").innerText = who;
-	if (who === "Pepega Poo Poo Piker!") { 
-	document.querySelector(".player").style.display = "block";
-	document.querySelector("#play").src = "https://www.youtube.com/embed/u-8h24VVndE?rel=0;&autoplay=1";
-	}
-	else
 	document.querySelector(".endgame").style.display = "block";
 }
 
